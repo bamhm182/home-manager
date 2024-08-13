@@ -282,7 +282,7 @@
     github = "n-hass";
     githubId = 72363381;
     keys = [{
-      longkeyid = "ed25519/0xA37159732728A6A6";
+      longkeyid = "rsa4096/0xFC95AB946A781EE7";
       fingerprint = "FDEE 6116 DBA7 8840 7323  4466 A371 5973 2728 A6A6";
     }];
   };

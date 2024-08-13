@@ -3,7 +3,6 @@
 {
   config = {
     services.podman.containers."my-container" = {
-      serviceName = "a-test-container";
       description = "home-manager test";
       autoupdate = "registry";
       autostart = true;
@@ -29,41 +28,42 @@
 
     nmt.script = ''
       configPath=home-files/.config/systemd/user
-      assertFileExists $configPath/a-test-container.service
+      containerFile=$configPath/podman-my-container.service
+      assertFileExists $containerFile
 
-      assertFileContains $configPath/a-test-container.service \
-        "a-test-container.container"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
+        "my-container.container"
+      assertFileContains $containerFile \
         "Description=home-manager test"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "AutoUpdate=registry"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Image=docker.io/alpine:latest"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "PodmanArgs=--network-alias test-alias --entrypoint sleep 1000 --security-opt=no-new-privileges"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Environment=VAL_A=A VAL_B=2 VAL_C=false"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "PublishPort=8080:80"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Volume=/tmp:/tmp"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "AddDevice=/dev/null:/dev/null"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Network=mynet"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Requires=podman-mynet-network.service"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "After=network.target podman-mynet-network.service"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "ReadOnlyTmpfs=true"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Restart=on-failure"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Before=fake.target"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "WantedBy=multi-user.target default.target"
-      assertFileContains $configPath/a-test-container.service \
+      assertFileContains $containerFile \
         "Label=nix.home-manager.managed=true"
     '';
   };

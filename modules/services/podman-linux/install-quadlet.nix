@@ -101,7 +101,7 @@ let
   # derivation to build a single Podman quadlet, outputting its systemd unit files
   buildPodmanQuadlet = quadlet:
     pkgs.stdenv.mkDerivation {
-      name = "home-${quadlet.unitType}-${quadlet.serviceName}";
+      name = "home-${quadlet.resourceType}-${quadlet.serviceName}";
 
       buildInputs = [ config.services.podman.package ];
 
@@ -115,7 +115,7 @@ let
         mkdir -p $out/units
 
         # Write the quadlet file
-        echo -n "${quadlet.source}" > $out/quadlets/${quadlet.serviceName}.${quadlet.unitType}
+        echo -n "${quadlet.source}" > $out/quadlets/${quadlet.serviceName}.${quadlet.resourceType}
 
         # Generate systemd unit file/s from the quadlet file
         export QUADLET_UNIT_DIRS=$out/quadlets

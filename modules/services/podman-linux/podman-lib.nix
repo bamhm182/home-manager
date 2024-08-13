@@ -33,11 +33,11 @@ in {
   unitConfigDefaults = { After = null; };
   unitConfigType = with types; attrsOf (either primitive (listOf primitive));
 
-  assertConfigTypes = configTypeRules: config: containerName:
-    lib.flatten (lib.mapAttrsToList (name: value:
-      if lib.hasAttr name configTypeRules then [{
+  buildConfigAsserts = quadletName: config: configTypeRules:
+    flatten (mapAttrsToList (name: value:
+      if hasAttr name configTypeRules then [{
         assertion = configTypeRules.${name}.check value;
-        message = "in '${containerName}' config. ${name}: '${
+        message = "in '${quadletName}' config. ${name}: '${
             toString value
           }' does not match expected type: ${
             configTypeRules.${name}.description
@@ -46,17 +46,16 @@ in {
         [ ]) config);
 
   formatExtraConfig = extraConfig:
-    let
-      nonNullConfig = lib.filterAttrs (name: value: value != null) extraConfig;
+    let nonNullConfig = filterAttrs (name: value: value != null) extraConfig;
     in concatStringsSep "\n"
     (mapAttrsToList (name: value: "${name}=${formatPrimitiveValue value}")
       nonNullConfig);
 
-  # input is expecting a list of quadletInternalType with all the same unitType
+  # input is expecting a list of quadletInternalType with all the same resourceType
   generateManifestText = quadlets:
     let
-      # create a list of all unique quadlet.unitTypes in quadlets
-      quadletTypes = unique (map (quadlet: quadlet.unitType) quadlets);
+      # create a list of all unique quadlet.resourceType in quadlets
+      quadletTypes = unique (map (quadlet: quadlet.resourceType) quadlets);
       # if quadletTypes is > 1, then all quadlets are not the same type
       allQuadletsSameType = length quadletTypes <= 1;
 
@@ -70,7 +69,7 @@ in {
         in {
           "container" = strippedName;
           "network" = strippedName;
-        }."${quadlet.unitType}";
+        }."${quadlet.resourceType}";
     in if allQuadletsSameType then ''
       ${concatStringsSep "\n"
       (map (quadlet: formatServiceName quadlet) quadlets)}

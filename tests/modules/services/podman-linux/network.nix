@@ -13,6 +13,8 @@
       assertFileExists $networkFile
 
       assertFileContains $networkFile \
+        "mynet.network"
+      assertFileContains $networkFile \
         "Subnet=192.168.1.0/24"
       assertFileContains $networkFile \
         "Gateway=192.168.1.1"

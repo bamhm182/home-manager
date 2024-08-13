@@ -5,7 +5,6 @@ with lib;
 let cfg = config.services.podman;
 in {
   options.services.podman = {
-
     auto-update = {
       enable = mkOption {
         type = types.bool;
@@ -19,7 +18,6 @@ in {
         description = "Systemd OnCalendar expression for the update";
       };
     };
-
   };
 
   config = mkMerge [

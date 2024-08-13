@@ -9,10 +9,10 @@ let
         description = "The name of the systemd service.";
       };
 
-      unitType = lib.mkOption {
+      resourceType = lib.mkOption {
         type = lib.types.str;
         default = "";
-        description = "The type of the systemd unit.";
+        description = "The type of the podman Quadlet resource.";
       };
 
       source = lib.mkOption {
