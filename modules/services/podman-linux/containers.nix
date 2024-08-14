@@ -76,11 +76,9 @@ let
         else
           "";
 
-      # TODO: check that the user hasn't supplied both networkMode and networks
-      formatNetwork = containerDef:
-        if containerDef.networkMode != null then
-          "Network=${containerDef.networkMode}"
-        else if containerDef.networks != [ ] then
+      # TODO: check this against networkMode option. IE, if 'host' there are no bridge networks, etc
+      formatBridgeNetworks = containerDef:
+        if containerDef.networks != [ ] then
           "Network=${concatStringsSep "," containerDef.networks}"
         else
           "";
@@ -140,7 +138,7 @@ let
         ${ifNotEmptyList containerDef.ports (formatPorts containerDef.ports)}
         ${ifNotNull containerDef.networkMode
         "Network=${containerDef.networkMode}"}
-        ${formatNetwork containerDef}
+        ${formatBridgeNetworks containerDef}
         ${ifNotNull containerDef.ip4 "IP=${containerDef.ip4}"}
         ${ifNotNull containerDef.ip6 "IP6=${containerDef.ip6}"}
         ${ifNotEmptyList containerDef.volumes
