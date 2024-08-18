@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 
@@ -406,7 +406,7 @@ in {
   config = let
     containerQuadlets =
       mapAttrsToList toQuadletInternal config.services.podman.containers;
-  in {
+  in mkIf pkgs.stdenv.isLinux {
     internal.podman-quadlet-definitions = containerQuadlets;
     assertions =
       flatten (map (container: container.assertions) containerQuadlets);

@@ -58,7 +58,7 @@ in {
   config = let
     networkQuadlets =
       mapAttrsToList toQuadletInternal config.services.podman.networks;
-  in {
+  in mkIf pkgs.stdenv.isLinux {
     internal.podman-quadlet-definitions = networkQuadlets;
     assertions = flatten (map (network: network.assertions) networkQuadlets);
 

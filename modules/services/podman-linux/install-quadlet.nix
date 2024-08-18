@@ -166,7 +166,7 @@ let
 in {
   imports = [ ./options.nix ];
 
-  config = {
+  config = mkIf pkgs.stdenv.isLinux {
     home.file = generateSystemdFileLinks allUnitFiles;
 
     # if the length of builtQuadlets is 0, then we don't need register the activation script

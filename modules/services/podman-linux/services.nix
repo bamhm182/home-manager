@@ -20,7 +20,7 @@ in {
     };
   };
 
-  config = mkMerge [
+  config = mkIf pkgs.stdenv.isLinux (mkMerge [
     (mkIf cfg.auto-update.enable {
       systemd.user.services."podman-auto-update" = {
         Unit = {
@@ -50,5 +50,5 @@ in {
         Install = { WantedBy = [ "timers.target" ]; };
       };
     })
-  ];
+  ]);
 }
