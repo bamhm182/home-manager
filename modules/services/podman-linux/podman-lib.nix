@@ -77,4 +77,13 @@ in {
       abort ''
         All quadlets must be of the same type.
         Quadlet types in this manifest: ${concatStringsSep ", " quadletTypes}'';
+
+  # podman requires setuid on newuidmad, so it cannot be provided by pkgs.shadow
+  # Including all possible locations in PATH for newuidmap is a workaround.
+  # NixOS provides a 'wrapped' variant at /run/wrappers/bin/newuidmap.
+  # Other distros must install the 'uidmap' package, ie for ubuntu: apt install uidmap.
+  # Extra paths are added to handle where distro package managers may put the uidmap binaries.
+  #
+  # Tracking for a potential solution: https://github.com/NixOS/nixpkgs/issues/138423
+  newuidmapPaths = "/run/wrappers/bin:/usr/bin:/bin:/usr/sbin:/sbin";
 }

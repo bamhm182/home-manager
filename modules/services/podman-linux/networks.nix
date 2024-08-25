@@ -3,6 +3,7 @@
 with lib;
 
 let
+
   podman-lib = import ./podman-lib.nix { inherit lib; };
 
   createQuadletSource = name: networkDef: ''
@@ -19,7 +20,11 @@ let
     WantedBy=multi-user.target default.target
 
     [Service]
-    Environment="PATH=${pkgs.su}:${pkgs.shadow}:${pkgs.coreutils}"
+    Environment=PATH=${podman-lib.newuidmapPaths}:${
+      makeBinPath [ pkgs.su pkgs.coreutils ]
+    }
+    ExecStartPre=${pkgs.bash}/bin/bash -c 'until ${config.services.podman.package}/bin/podman unshare ${pkgs.coreutils}/bin/true; do sleep 1; done'
+    TimeoutStartSec=15
     RemainAfterExit=yes
   '';
 
@@ -62,7 +67,6 @@ in {
     internal.podman-quadlet-definitions = networkQuadlets;
     assertions = flatten (map (network: network.assertions) networkQuadlets);
 
-    # manifest file
     home.file."${config.xdg.configHome}/podman/networks.manifest".text =
       podman-lib.generateManifestText networkQuadlets;
   };

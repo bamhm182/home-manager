@@ -3,7 +3,11 @@
 with lib;
 
 let
+  podman-lib = import ./podman-lib.nix { inherit lib; };
+
   quadletActivationCleanupScript = ''
+    PATH=$PATH:${podman-lib.newuidmapPaths}
+
     resourceManifest=()
     # Define VERBOSE_ENABLED as a function
     VERBOSE_ENABLED() {
