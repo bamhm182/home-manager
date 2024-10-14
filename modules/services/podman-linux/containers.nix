@@ -20,7 +20,10 @@ let
           ContainerName = name;
           DropCapability = containerDef.dropCapabilities;
           Exec = containerDef.exec;
+          Group = containerDef.group;
           Image = containerDef.image;
+          IP = containerDef.ip4;
+          IP6 = containerDef.ip6;
           Label = (lib.recursiveUpdate { "nix.home-manager.managed" = true; }
             containerDef.labels);
           Network = (if (builtins.elem containerDef.networkMode [ "host" "none" ]) then
@@ -35,6 +38,8 @@ let
             else
               [ ]);
           PublishPort = containerDef.ports;
+          UserNS = containerDef.userNS;
+          User = containerDef.user;
           Volume = containerDef.volumes;
         };
         Install = {
@@ -213,12 +218,30 @@ in let
         '';
       };
 
+      group = mkOption {
+        type = with types; nullOr (oneOf [ int str ]);
+        default = null;
+        description = "The group ID inside the container.";
+      };
+
       image = mkOption {
         type = types.str;
         description = "The container image.";
         example = literalMD ''
           `image = "registry.access.redhat.com/ubi9-minimal:latest";`
         '';
+      };
+
+      ip4 = mkOption {
+        type = with types; nullOr str;
+        default = null;
+        description = "Set an IPv4 address for the container.";
+      };
+
+      ip6 = mkOption {
+        type = with types; nullOr str;
+        default = null;
+        description = "Set an IPv6 address for the container.";
       };
 
       labels = mkOption {
@@ -270,6 +293,18 @@ in let
         example = literalMD ''
           `ports = [ "8080:80" ];`
         '';
+      };
+
+      userNS = mkOption {
+        type = with types; nullOr str;
+        default = null;
+        description = "Use a user namespace for the container.";
+      };
+
+      user = mkOption {
+        type = with types; nullOr (oneOf [ int str ]);
+        default = null;
+        description = "The user ID inside the container.";
       };
 
       volumes = mkOption {

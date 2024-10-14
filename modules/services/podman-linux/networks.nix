@@ -24,6 +24,7 @@ let
         Network = {
           Driver = networkDef.driver;
           Gateway = networkDef.gateway;
+          Internal = networkDef.internal;
           NetworkName = name;
           Label = (lib.recursiveUpdate { "nix.home-manager.managed" = true; }
           networkDef.labels);
@@ -132,6 +133,12 @@ in let
         example = literalMD ''
           `gateway = "192.168.20.1";`
         '';
+      };
+
+      internal = mkOption {
+        type = with types; nullOr bool;
+        default = null;
+        description = "Whether the network should be internal";
       };
 
       labels = mkOption {

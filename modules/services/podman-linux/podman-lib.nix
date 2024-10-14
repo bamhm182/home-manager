@@ -38,11 +38,16 @@ in {
           ContainerName = types.str;
           DropCapability = with types; listOf str;
           Exec = types.str;
+          Group = with types; oneOf [ int str ];
           Image = types.str;
+          IP = types.str;
+          IP6 = types.str;
           Label = primitiveAttrs;
           Network = with types; listOf str;
           PodmanArgs = with types; listOf str;
           PublishPort = with types; listOf str;
+          UserNS = types.str;
+          User = with types; oneOf [ int str ];
           Volume = with types; listOf str;
         };
         Install = {
@@ -51,6 +56,7 @@ in {
         Network = {
           Driver = with types; enum [ "bridge" "ipvlan" "macvlan" ];
           Gateway = types.str;
+          Internal = types.bool;
           NetworkName = types.str;
           Label = primitiveAttrs;
           Options = primitiveAttrs;
