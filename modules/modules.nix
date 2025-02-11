@@ -36,12 +36,14 @@ let
     ./misc/pam.nix
     ./misc/qt.nix
     ./misc/qt/kconfig.nix
+    ./misc/shell.nix
     ./misc/specialisation.nix
     ./misc/submodule-support.nix
     ./misc/tmpfiles.nix
     ./misc/uninstall.nix
     ./misc/version.nix
     ./misc/vte.nix
+    ./misc/xdg-autostart.nix
     ./misc/xdg-desktop-entries.nix
     ./misc/xdg-mime-apps.nix
     ./misc/xdg-mime.nix
@@ -52,6 +54,7 @@ let
     ./misc/xfconf.nix
     ./programs/abook.nix
     ./programs/aerc.nix
+    ./programs/aerospace.nix
     ./programs/afew.nix
     ./programs/alacritty.nix
     ./programs/alot.nix
@@ -107,6 +110,7 @@ let
     ./programs/ghostty.nix
     ./programs/git-cliff.nix
     ./programs/git-credential-oauth.nix
+    ./programs/git-worktree-switcher.nix
     ./programs/git.nix
     ./programs/gitui.nix
     ./programs/gnome-shell.nix
@@ -146,6 +150,7 @@ let
     ./programs/kitty.nix
     ./programs/kodi.nix
     ./programs/kubecolor.nix
+    ./programs/lapce.nix
     ./programs/lazygit.nix
     ./programs/ledger.nix
     ./programs/less.nix
@@ -330,6 +335,7 @@ let
     ./services/keybase.nix
     ./services/keynav.nix
     ./services/lieer.nix
+    ./services/linux-wallpaperengine.nix
     ./services/listenbrainz-mpd.nix
     ./services/lorri.nix
     ./services/mako.nix
@@ -389,6 +395,7 @@ let
     ./services/taffybar.nix
     ./services/tahoe-lafs.nix
     ./services/taskwarrior-sync.nix
+    ./services/tldr-update.nix
     ./services/trayer.nix
     ./services/trayscale.nix
     ./services/twmn.nix

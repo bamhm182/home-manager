@@ -1701,6 +1701,16 @@ in {
       }
 
       {
+        time = "2024-08-18T11:42:08+00:00";
+        message = ''
+          A new module is available: 'programs.lapce'.
+
+          Lightning-fast and Powerful Code Editor written in Rust.
+          See https://lapce.dev/ for more.
+        '';
+      }
+
+      {
         time = "2024-09-13T08:58:17+00:00";
         condition = hostPlatform.isLinux;
         message = ''
@@ -1946,6 +1956,7 @@ in {
           speed, features, or native UIs. Ghostty provides all three.
         '';
       }
+
       {
         time = "2025-01-04T15:00:00+00:00";
         condition = hostPlatform.isLinux;
@@ -1958,6 +1969,80 @@ in {
 
           This Home Manager module allows you to configure both wayfire itself,
           as well as wf-shell.
+        '';
+      }
+
+      {
+        time = "2025-01-21T17:28:13+00:00";
+        condition = with config.programs.yazi; enable && enableFishIntegration;
+        message = ''
+          Yazi's fish shell integration wrapper now calls the 'yazi' executable
+          directly, ignoring any shell aliases with the same name.
+
+          Your configuration may break if you rely on the wrapper calling a
+          'yazi' alias.
+        '';
+      }
+
+      {
+        time = "2025-01-29T17:34:53+00:00";
+        condition = config.programs.firefox.enable;
+        message = ''
+          The Firefox module now provides a
+          'programs.firefox.profiles.<name>.preConfig' option.
+
+          It allows extra preferences to be added to 'user.js' before the
+          options specified in 'programs.firefox.profiles.<name>.settings', so
+          that they can be overwritten.
+        '';
+      }
+
+      {
+        time = "2025-01-29T19:11:20+00:00";
+        condition = hostPlatform.isDarwin;
+        message = ''
+          A new module is available: 'programs.aerospace'.
+
+          AeroSpace is an i3-like tiling window manager for macOS.
+          See https://github.com/nikitabobko/AeroSpace for more.
+        '';
+      }
+
+      {
+        time = "2025-01-30T09:18:55+00:00";
+        condition = hostPlatform.isLinux;
+        message = ''
+          A new module is available: 'services.linux-wallpaperengine'.
+
+          Reproduce the background functionality of Wallpaper Engine on Linux
+          systems.
+        '';
+      }
+
+      {
+        time = "2025-02-07T22:31:45+00:00";
+        message = ''
+          All 'programs.<PROGRAM>.enable<SHELL>Integration' values now default
+          to the new 'home.shell.enable<SHELL>Integration' options, which
+          inherit from the new the 'home.shell.enableShellIntegration' option.
+
+          The following inconsistent default values change from 'false' to
+          'true':
+
+          - programs.zellij.enableBashIntegration
+          - programs.zellij.enableFishIntegration
+          - programs.zellij.enableZshIntegration
+        '';
+      }
+
+      {
+        time = "2025-02-11T15:25:26+00:00";
+        message = ''
+          A new module is available: 'programs.git-worktree-switcher'.
+
+          git-worktree-switcher allows you to quickly switch git worktrees.
+          It includes shell completions for Bash, Fish and Zsh.
+          See https://github.com/mateusauler/git-worktree-switcher for more.
         '';
       }
     ];
