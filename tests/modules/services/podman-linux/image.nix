@@ -1,6 +1,6 @@
-{ ... }:
-
 {
+  imports = [ ./podman-stubs.nix ];
+
   services.podman = {
     enable = true;
     images = { "my-img" = { image = "docker.io/alpine:latest"; }; };

@@ -1,17 +1,19 @@
 { pkgs, ... }:
-let
-  containerFile = pkgs.writeTextFile {
+
+{
+  imports = [ ./podman-stubs.nix ];
+
+  services.podman = {
+    enable = true;
+    builds = {
+      "my-bld" = { file = let 
+        containerFile = pkgs.writeTextFile {
     name = "Containerfile";
     text = ''
       FROM docker.io/alpine:latest
     '';
   };
-
-in {
-  services.podman = {
-    enable = true;
-    builds = {
-      "my-bld" = { file = "${containerFile}"; };
+      in "${containerFile}"; };
 
       "my-bld-2" = {
         file = "https://www.github.com/././Containerfile";
