@@ -6,14 +6,16 @@
   services.podman = {
     enable = true;
     builds = {
-      "my-bld" = { file = let 
-        containerFile = pkgs.writeTextFile {
-    name = "Containerfile";
-    text = ''
-      FROM docker.io/alpine:latest
-    '';
-  };
-      in "${containerFile}"; };
+      "my-bld" = {
+        file = let
+          containerFile = pkgs.writeTextFile {
+            name = "Containerfile";
+            text = ''
+              FROM docker.io/alpine:latest
+            '';
+          };
+        in "${containerFile}";
+      };
 
       "my-bld-2" = {
         file = "https://www.github.com/././Containerfile";

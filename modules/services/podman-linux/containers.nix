@@ -9,64 +9,54 @@ let
 
   createQuadletSource = name: containerDef:
     let
-      makeServiceName = name: type:
+      formatServiceNameForType = type: name:
+        {
+          image = "podman-${name}-image.service";
+          build = "podman-${name}-build.service";
+          network = "podman-${name}-network.service";
+          volume = "podman-${name}-volume.service";
+        }."${type}";
+
+      dependencyByHomeManagerQuadlet = type: name:
         let
-          typeName = (if lib.strings.hasSuffix "s" type then
-            (lib.strings.substring 0 (builtins.stringLength type - 1) type)
-          else
-            type);
-        in "podman-${name}-${typeName}.service";
-
-      extractVolumeName = resource: builtins.head (builtins.split ":" resource);
-
-      standardizeResource = res:
-        let
-          lst = if lib.isList res then
-            res
-          else if res != null then
-            [ res ]
-          else
-            [ ];
-        in map extractVolumeName lst;
-
-      filterManagedResources = resource: definedResources:
-        builtins.filter (x: builtins.elem x definedResources)
-        (standardizeResource resource);
-
-      getDefinedResourceNames = type:
-        let
-          typeName =
-            if lib.strings.hasSuffix "s" type then type else "${type}s";
-        in builtins.attrNames cfg."${typeName}";
-
-      findDefinedImageType = if (builtins.elem containerDef.image
-        (getDefinedResourceNames "builds")) then
-        "builds"
-      else
-        "images";
-
-      getManagedResourceNames = type:
-        let
-          resourceType = if type == "image" then findDefinedImageType else type;
-        in (filterManagedResources (builtins.getAttr type containerDef)
-          (getDefinedResourceNames resourceType));
-
-      getServiceNames = type:
-        let
-          resourceType = if type == "image" then findDefinedImageType else type;
-        in map (name: makeServiceName name resourceType)
-        (getManagedResourceNames type);
-
-      managedServices = builtins.concatLists
-        (map (type: getServiceNames type) [ "image" "network" "volumes" ]);
-
-      getActualImage =
-        if (builtins.hasAttr containerDef.image cfg.images) then
-          cfg.images."${containerDef.image}".image
-        else if (builtins.hasAttr containerDef.image cfg.builds) then
-          "localhost/homemanager/${containerDef.image}"
+          definitionsOfType =
+            filter (q: q.resourceType == type) cfg.internal.quadletDefinitions;
+          matchingName =
+            filter (q: q.serviceName == "podman-${name}") definitionsOfType;
+        in if ((length matchingName) == 1) then
+          [ (formatServiceNameForType type name) ]
         else
-                  containerDef.image;
+          [ ];
+
+      forEachValue = type: value:
+        let resolve = v: dependencyByHomeManagerQuadlet type v;
+        in if isList value then
+          concatLists (map resolve value)
+        else
+          resolve value;
+
+      withResolverFor = type: value:
+        {
+          "image" = forEachValue "image" value;
+          "build" = forEachValue "build" value;
+          "network" = forEachValue "network" value;
+          "volume" = let
+            a = if isList value then value else [ value ];
+            volumes = map (v: elemAt (splitString ":" v) 0) a;
+          in forEachValue "volume" volumes;
+        }.${type};
+
+      dependencyServices = (withResolverFor "image" containerDef.image)
+        ++ (withResolverFor "build" containerDef.image)
+        ++ (withResolverFor "network" containerDef.network)
+        ++ (withResolverFor "volume" containerDef.volumes);
+
+      resolvedImage = if (builtins.hasAttr containerDef.image cfg.images) then
+        cfg.images."${containerDef.image}".image
+      else if (builtins.hasAttr containerDef.image cfg.builds) then
+        "localhost/homemanager/${containerDef.image}"
+      else
+        containerDef.image;
 
       quadlet = (podman-lib.deepMerge {
         Container = {
@@ -80,7 +70,7 @@ let
           EnvironmentFile = containerDef.environmentFile;
           Exec = containerDef.exec;
           Group = containerDef.group;
-          Image = getActualImage;
+          Image = resolvedImage;
           IP = containerDef.ip4;
           IP6 = containerDef.ip6;
           Label =
@@ -94,11 +84,10 @@ let
           Volume = containerDef.volumes;
         };
         Install = {
-          WantedBy = (if containerDef.autoStart then [
+          WantedBy = optionals containerDef.autoStart [
             "default.target"
             "multi-user.target"
-          ] else
-            [ ]);
+          ];
         };
         Service = {
           Environment = {
@@ -112,8 +101,8 @@ let
           TimeoutStopSec = 30;
         };
         Unit = {
-          After = [ "network.target" ] ++ managedServices;
-          Requires = managedServices;
+          After = [ "network.target" ] ++ dependencyServices;
+          Requires = dependencyServices;
           Description = (if (builtins.isString containerDef.description) then
             containerDef.description
           else
