@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
 
 with lib;
 
@@ -153,4 +153,10 @@ in {
       lines = splitString "\n" text;
       nonEmptyLines = filter (line: line != "") lines;
     in concatStringsSep "\n" nonEmptyLines;
+
+  awaitPodmanUnshare = pkgs.writeShellScript "await-podman-unshare" ''
+    until ${config.services.podman.package}/bin/podman unshare ${pkgs.coreutils}/bin/true; do
+      ${pkgs.coreutils}/bin/sleep 1
+    done
+  '';
 }

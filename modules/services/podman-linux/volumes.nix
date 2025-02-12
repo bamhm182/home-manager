@@ -5,13 +5,7 @@ with lib;
 let
   cfg = config.services.podman;
 
-  podman-lib = import ./podman-lib.nix { inherit lib config; };
-
-  awaitPodmanUnshare = pkgs.writeShellScript "await-podman-unshare" ''
-    until ${cfg.package}/bin/podman unshare ${pkgs.coreutils}/bin/true; do
-      ${pkgs.coreutils}/bin/sleep 1
-    done
-  '';
+  podman-lib = import ./podman-lib.nix { inherit pkgs lib config; };
 
   createQuadletSource = name: volumeDef:
     let
@@ -29,7 +23,7 @@ let
               "${makeBinPath [ pkgs.su pkgs.coreutils ]}"
             ]);
           };
-          ExecStartPre = [ "${awaitPodmanUnshare}" ];
+          ExecStartPre = [ "${podman-lib.awaitPodmanUnshare}" ];
           TimeoutStartSec = 15;
           RemainAfterExit = "yes";
         };

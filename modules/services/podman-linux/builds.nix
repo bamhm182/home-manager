@@ -3,7 +3,7 @@ with lib;
 let
   cfg = config.services.podman;
 
-  podman-lib = import ./podman-lib.nix { inherit lib config; };
+  podman-lib = import ./podman-lib.nix { inherit pkgs lib config; };
 
   createQuadletSource = name: buildDef:
     let
