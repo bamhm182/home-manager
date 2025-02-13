@@ -342,7 +342,7 @@ in {
         flatten (map (container: container.assertions) containerQuadlets);
 
       # manifest file
-      home.file."${config.xdg.configHome}/podman/containers.manifest".text =
+      xdg.configFile."podman/containers.manifest".text =
         podman-lib.generateManifestText containerQuadlets;
     };
 }

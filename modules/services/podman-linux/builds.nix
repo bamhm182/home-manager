@@ -162,7 +162,7 @@ in {
     services.podman.internal.quadletDefinitions = buildQuadlets;
     assertions = flatten (map (build: build.assertions) buildQuadlets);
 
-    xdg.configFile."/podman/images.manifest".text =
+    xdg.configFile."podman/images.manifest".text =
       podman-lib.generateManifestText buildQuadlets;
   };
 }

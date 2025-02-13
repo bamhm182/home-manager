@@ -156,7 +156,7 @@ in {
     services.podman.internal.quadletDefinitions = networkQuadlets;
     assertions = flatten (map (network: network.assertions) networkQuadlets);
 
-    home.file."${config.xdg.configHome}/podman/networks.manifest".text =
-      podman-lib.generateManifestText networkQuadlets;
+      xdg.configFile."podman/networks.manifest".text =
+        podman-lib.generateManifestText networkQuadlets;
   };
 }

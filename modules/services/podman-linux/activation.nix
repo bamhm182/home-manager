@@ -28,6 +28,7 @@
 
       formatString="{{.Name}}"
       [[ $resourceType = "container" ]] && formatString="{{.Names}}"
+      [[ $resourceType = "image" ]] && formatString="{{.Repository}}"
 
       local listOutput=$(${config.services.podman.package}/bin/podman $resourceType ls $extraListCommands --filter 'label=nix.home-manager.managed=true' --format "$formatString")
 
@@ -37,12 +38,12 @@
         VERBOSE_ENABLED && echo "No ''${resourceType}s available to process." || true
       else
         for resource in "''${podmanResources[@]}"; do
-            if ! isResourceInManifest "$resource"; then
-              removeResource "$resourceType" "$resource"
-            else
-              VERBOSE_ENABLED && echo "Keeping managed $resourceType: $resource" || true
-            fi
-          done
+          if ! isResourceInManifest "$resource"; then
+            removeResource "$resourceType" "$resource"
+          else
+            VERBOSE_ENABLED && echo "Keeping managed $resourceType: $resource" || true
+          fi
+        done
       fi
     }
 

@@ -124,9 +124,8 @@ in {
           # specific logic for writing the unit name goes here. It should be
           #   identical to what `podman <resource> ls` shows
         in {
-          "build" = strippedName;
+          "build" = "localhost/homemanager/${strippedName}";
           "container" = strippedName;
-          "image" = strippedName;
           "network" = strippedName;
           "volume" = strippedName;
         }."${quadlet.resourceType}";
