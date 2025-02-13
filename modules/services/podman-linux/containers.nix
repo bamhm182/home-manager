@@ -101,7 +101,7 @@ let
           TimeoutStopSec = 30;
         };
         Unit = {
-          After = [ "network.target" ] ++ dependencyServices;
+          After = dependencyServices;
           Requires = dependencyServices;
           Description = (if (builtins.isString containerDef.description) then
             containerDef.description

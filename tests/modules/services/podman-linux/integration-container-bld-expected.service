@@ -31,7 +31,6 @@ ExecStart=/nix/store/00000000000000000000000000000000-podman/bin/podman run --na
 [Unit]
 Wants=podman-user-wait-network-online.service
 After=podman-user-wait-network-online.service
-After=network.target
 After=podman-my-bld-build.service
 Description=Service for container my-container-bld
 Requires=podman-my-bld-build.service
